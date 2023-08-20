@@ -18,7 +18,10 @@ import {cn} from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import ReactMarkdown from "react-markdown";
+// import { ProModal } from '../../../../components/pro-modal';
+import { useProModal } from "@/hooks/use-pro-modal";
 const CodePage = () =>{
+    const proModal = useProModal();
     const router = useRouter();
     const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
     const form = useForm<z.infer<typeof formSchema>>({
@@ -46,8 +49,9 @@ const CodePage = () =>{
 
             form.reset();
         } catch (error: any) {
-            //Todo :open pro model
-            console.log(error);
+            if(error?.response?.status === 403){
+                proModal.onOpen();
+            }
         } finally{
             router.refresh();
         }
